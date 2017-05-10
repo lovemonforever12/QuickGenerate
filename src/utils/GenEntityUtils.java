@@ -30,7 +30,7 @@ public class GenEntityUtils {
 
 	public static void generateEntity(String tableName, String packageName, String entityName) throws Exception{
 		try{
-		    connectSQL("com.mysql.jdbc.Driver", "jdbc:mysql://202.104.31.178:5559/zyxd?useUnicode=true&characterEncoding=UTF-8", "root", "ucg");//Á¬½ÓÊý¾Ý¿â  
+		    connectSQL("com.mysql.jdbc.Driver", "jdbc:mysql://202.104.31.178:5559/zyxd?useUnicode=true&characterEncoding=UTF-8", "root", "ucg");//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½  
 			PreparedStatement stmt = con.prepareStatement(" show full fields from "+tableName);
 			ResultSet rs = stmt.executeQuery();
 			List<FieldInfo> list = new ArrayList<FieldInfo>();
@@ -153,14 +153,7 @@ public class GenEntityUtils {
 		
 	}
 	
-	/** 
-     * Á¬½ÓÊý¾Ý¿â ´´½¨statement¶ÔÏó 
-     * 
-     * @param driver 
-     * @param url 
-     * @param UserName 
-     * @param Password 
-     */  
+	
     public static void connectSQL(String driver, String url, String UserName, String Password) {  
         try {  
             Class.forName(driver).newInstance();  
