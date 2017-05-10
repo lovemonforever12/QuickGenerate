@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.swing.JOptionPane;
-
 import com.ucg.util.config.PropertiesUtil;
 import com.ucg.util.file.FileUtil;
 
@@ -56,8 +54,10 @@ public class GenEntityUtils {
 	//系统路径
 	private static String path="";
 	
-	//特殊
+	//model里面的方法
 	private static String modelMethod="";
+	
+	private static  LinkedList<String> filePathList = new LinkedList<String>();
 	
 	
 	public static void initConfig(){
@@ -129,20 +129,24 @@ public class GenEntityUtils {
 		Writer out = null;
 		
 		try{
-			LinkedList<String> filePathList = new LinkedList<String>();
+			
+			//判断文件夹是否存在
+			if(!FileUtil.checkExist(path)){
+				FileUtil.CreateDirectory(path);
+			}
 			
 			for (int i = 0; i < templateList.size(); i++) {
 				String ftlName=templateList.get(i);
 				String filePath = path+ftlName.substring(0, ftlName.indexOf("."))+".java";
 				filePathList.add(filePath);
-				if(!FileUtil.checkExist(path)){
-					FileUtil.CreateDirectory(path);
-				}
 				Configuration cfg =getConfiguration();
 				Template template = cfg.getTemplate(ftlName);
 				template.setEncoding("UTF-8");
 				out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath), "UTF-8")); 
 				template.process(data, out);  
+				//for循环 下面close方法不能写在finally方法里面，不然就没法结束流
+				out.flush();  
+				out.close();
 			}
 			
 			//对生成的模板进行合并
@@ -153,33 +157,37 @@ public class GenEntityUtils {
 				StringBuffer mainJavaText= new StringBuffer(FileUtil.readTextFile(mainJava));
 				int indexOf = mainJavaText.indexOf(Constant.flag);
 				if(indexOf>-1){//如果有自动生成标记号的话，就在它前面加方法
-					StringBuffer begin=new StringBuffer(mainJavaText.substring(0,indexOf));
-					StringBuffer end=new StringBuffer(mainJavaText.substring(indexOf,mainJavaText.length()));
-					//这里添加其他的模板
-					
-					for (int i = 1; i < filePathList.size(); i++) {
-						StringBuffer otherJavaText= new StringBuffer(FileUtil.readTextFile(filePathList.get(i)));
-						begin.append("\n\r");
-						begin.append(otherJavaText);
-					}
-					
-					begin.append("\n\r");
-					begin.append(end);
-					FileUtil.saveAsFileOutputStream(javafile, begin.toString());
-					
-				}else{//直接加载最后面
-					
+					indexOf = mainJavaText.indexOf(Constant.flag);
+				}else{//没有直接加载最后面
+					indexOf=mainJavaText.lastIndexOf("}");
 				}
-				
+				StringBuffer begin=new StringBuffer(mainJavaText.substring(0,indexOf));
+				StringBuffer end=new StringBuffer(mainJavaText.substring(indexOf,mainJavaText.length()));
+				//这里添加其他的模板
+				for (int i = 1; i < filePathList.size(); i++) {
+					StringBuffer otherJavaText= new StringBuffer(FileUtil.readTextFile(filePathList.get(i)));
+					begin.append("\n\r");
+					begin.append(otherJavaText);
+				}
+				begin.append("\n\r");
+				begin.append(end);
+				FileUtil.saveAsFileOutputStream(javafile, begin.toString());
 			}
 			
 		}catch(Exception e){
+			e.printStackTrace();
 			throw new Exception(e.getMessage());
 		}finally{
-			out.flush();  
-			out.close();
+			//删除其他文件
+			for (int i = 0; i < filePathList.size(); i++) {
+				boolean deleteFlag = FileUtil.deleteFromName(filePathList.get(i));
+				//System.out.println("文件["+filePathList.get(i)+"]删除"+(deleteFlag ==true?"成功":"失败"));
+			}
 		}
 	}
+
+
+	
 	
 	public static  boolean isSurperField(String field){
 		if("create_user_id".equals(field) || "create_user_name".equals(field) || "create_time".equals(field)|| "update_user_id".equals(field)|| "update_user_name".equals(field)|| "update_time".equals(field) || "ID".equals(field)||"id".equals(field)){
@@ -281,14 +289,7 @@ public class GenEntityUtils {
 		
 	}
 	
-	/** 
-     * 连接数据�?创建statement对象 
-     * 
-     * @param driver 
-     * @param url 
-     * @param UserName 
-     * @param Password 
-     */  
+	
     public static void connectSQL(String driver, String url, String UserName, String Password) {  
         try {  
             Class.forName(driver).newInstance();  
@@ -299,7 +300,7 @@ public class GenEntityUtils {
     }  
 	
 	
-	private static Configuration getConfiguration() throws Exception{  
+	public static Configuration getConfiguration() throws Exception{  
 		try{
 			if (null == cfg) {  
 				cfg = new Configuration();
@@ -316,11 +317,18 @@ public class GenEntityUtils {
 	} 
 	
 	public static void main(String[] args) throws Exception {
-		initConfig();
-		generateEntity(tablename, packagename, entityname);
-		//JOptionPane.showMessageDialog(null, "完美生成实体","提示" , JOptionPane.INFORMATION_MESSAGE)
-		String doc = javafile.substring(0,javafile.lastIndexOf("\\"));
-		Runtime.getRuntime().exec("cmd /c start "+doc);
+		try {
+			initConfig();
+			generateEntity(tablename, packagename, entityname);
+			//JOptionPane.showMessageDialog(null, "完美生成实体","提示" , JOptionPane.INFORMATION_MESSAGE)
+			String doc = javafile.substring(0,javafile.lastIndexOf("\\"));
+			Runtime.getRuntime().exec("cmd /c start "+doc);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+    
 	}
 	
 }  
