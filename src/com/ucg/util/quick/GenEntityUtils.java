@@ -41,7 +41,7 @@ public class GenEntityUtils {
 	//jdbc
 	private static Configuration cfg;
 	private static Connection con = null;  
-	private static String javafile = "";
+	private static String javafilePath = "";
 	private static String jdbcUrl="";
 	private static String user="";
 	private static String password="";
@@ -62,13 +62,13 @@ public class GenEntityUtils {
 	
 	public static void initConfig(){
 		PropertiesUtil.loadPropertyFile("quickl.properties");
-		javafile = PropertiesUtil.getProperty("javafile");
 		jdbcUrl = PropertiesUtil.getProperty("jdbcUrl");
 		user = PropertiesUtil.getProperty("user");
 		password = PropertiesUtil.getProperty("password");
 		tablename = PropertiesUtil.getProperty("tablename");
 		packagename = PropertiesUtil.getProperty("packagename");
 		entityname = PropertiesUtil.getProperty("entityname");
+		javafilePath = PropertiesUtil.getProperty("javafilePath")+entityname+".java";
 		path = PropertiesUtil.getProperty("path");
 		modelMethod = PropertiesUtil.getProperty("modelMethod");
 	}
@@ -112,7 +112,7 @@ public class GenEntityUtils {
 			map.put("entityLowerName", entityName.toLowerCase());
 			map.put("createUser", System.getProperty("user.name"));
 			map.put("createTime", new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()));
-			generateFile(getTemplateList(modelMethod), javafile, map);
+			generateFile(getTemplateList(modelMethod), javafilePath, map);
 		}catch(Exception e){
 			e.printStackTrace();
 			throw new Exception(e.getMessage());
@@ -321,7 +321,7 @@ public class GenEntityUtils {
 			initConfig();
 			generateEntity(tablename, packagename, entityname);
 			//JOptionPane.showMessageDialog(null, "完美生成实体","提示" , JOptionPane.INFORMATION_MESSAGE)
-			String doc = javafile.substring(0,javafile.lastIndexOf("\\"));
+			String doc = javafilePath.substring(0,javafilePath.lastIndexOf("\\"));
 			Runtime.getRuntime().exec("cmd /c start "+doc);
 			
 		} catch (Exception e) {

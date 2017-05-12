@@ -5,5 +5,11 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="webbin/freemarker-2.3.20.jar"/>
 	<classpathentry kind="lib" path="webbin/mysql-connector-java-5.1.35-bin.jar"/>
+	<classpathentry kind="lib" path="webbin/json-lib-2.1-jdk15.jar"/>
+	<classpathentry kind="lib" path="webbin/commons-beanutils-1.8.3.jar"/>
+	<classpathentry kind="lib" path="webbin/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="webbin/commons-lang-2.5.jar"/>
+	<classpathentry kind="lib" path="webbin/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="webbin/ezmorph-1.0.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
