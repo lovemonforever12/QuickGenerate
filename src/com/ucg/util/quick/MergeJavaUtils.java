@@ -81,9 +81,9 @@ public class MergeJavaUtils {
 			}
 
 			
-			int indexOf = mainJavaText.indexOf(Constant.flag);
+			int indexOf = mainJavaText.indexOf(QuickConstant.flag);
 			if(indexOf>-1){//如果有自动生成标记号的话，就在它前面加方法
-				indexOf = mainJavaText.indexOf(Constant.flag);
+				indexOf = mainJavaText.indexOf(QuickConstant.flag);
 			}else{//没有直接加载最后面
 				indexOf=mainJavaText.lastIndexOf("}");
 			}

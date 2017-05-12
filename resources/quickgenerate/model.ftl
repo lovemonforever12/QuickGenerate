@@ -1,4 +1,4 @@
-package ${packageName};
+package ${packageName}.model;
 
 import java.util.List;
 import java.util.Map;
@@ -12,8 +12,7 @@ import com.ucg.base.util.TagUtil;
 * 项目名称：中盈小贷 
 * 创建人：${createUser}
 * 创建时间：${createTime}   
-* 功能说明：自动生成实体
-* @param  
+* 功能说明：${chinese}实体
 * 修改人：${createUser}
 * 修改时间：${createTime}     
 * 修改备注：   
@@ -24,8 +23,8 @@ public class ${entityName}  extends Model<${entityName}>{
 	public static final ${entityName} dao = new ${entityName}();
 	//-------------------------自动生成实体get/set方法--------------------------//
 	 <#list columns as po>
-       public static final String ${po.column?upper_case}="${po.column}";  //${po.comment}
-     </#list>
+   	public static final String ${po.column?upper_case}="${po.column}";  //${po.comment}
+	 </#list>
 	
 	<#list columns as po>
 	public ${po.fieldType} get${po.fieldName?cap_first}(){ //${po.comment}

@@ -4,6 +4,7 @@ package com.ucg.util.quick;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.URLDecoder;
@@ -22,6 +23,8 @@ import java.util.Map;
 
 import com.ucg.util.config.PropertiesUtil;
 import com.ucg.util.file.FileUtil;
+import com.ucg.util.string.StringUtil;
+import com.ucg.util.translate.tools.TranslateTools;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -53,9 +56,13 @@ public class GenEntityUtils {
 	
 	//系统路径
 	private static String path="";
+	private static String creator="";
+	private static String acessUrl="";
+	
+	
 	
 	//model里面的方法
-	private static String modelMethod="";
+	private static String template="";
 	
 	private static  LinkedList<String> filePathList = new LinkedList<String>();
 	
@@ -70,7 +77,9 @@ public class GenEntityUtils {
 		entityname = PropertiesUtil.getProperty("entityname");
 		javafilePath = PropertiesUtil.getProperty("javafilePath")+entityname+".java";
 		path = PropertiesUtil.getProperty("path");
-		modelMethod = PropertiesUtil.getProperty("modelMethod");
+		creator = PropertiesUtil.getProperty("creator");
+		acessUrl = PropertiesUtil.getProperty("acessUrl");
+		template = PropertiesUtil.getProperty("template");
 	}
 
 	
@@ -78,7 +87,7 @@ public class GenEntityUtils {
 		ArrayList<String> list = new ArrayList<String>();
 		String[] indexs = str.split(",");
 		for (String tIndex : indexs) {
-			String tempalteName = Constant.templateType.get(tIndex);
+			String tempalteName = QuickConstant.templateType.get(tIndex);
 			list.add(tempalteName);
 		}
 		return list;
@@ -91,6 +100,7 @@ public class GenEntityUtils {
 			PreparedStatement stmt = con.prepareStatement(" show full fields from "+tableName);
 			ResultSet rs = stmt.executeQuery();
 			List<FieldInfo> list = new ArrayList<FieldInfo>();
+			List<String> fieldList=new ArrayList<String>();
 			while(rs.next()){
 				String column = rs.getString("field");
 				if(isSurperField(column)){
@@ -101,6 +111,7 @@ public class GenEntityUtils {
 				fieldInfo.setFieldType(getFieldType(rs.getString("type")));
 				fieldInfo.setGetMethod(getMothodType(rs.getString("type")));
 				fieldInfo.setFieldName(getFiledName(column));
+				fieldList.add(getFiledName(column));
 				fieldInfo.setComment(rs.getString("comment"));
 				list.add(fieldInfo);
 			}
@@ -110,9 +121,12 @@ public class GenEntityUtils {
 			map.put("packageName", packageName);
 			map.put("entityName", entityName);
 			map.put("entityLowerName", entityName.toLowerCase());
-			map.put("createUser", System.getProperty("user.name"));
+			map.put("chinese",TranslateTools.translateText(entityName.toLowerCase()).getTranslation()[0]);
+			map.put("field",StringUtil.asString(fieldList, ","));
+			map.put("createUser",creator);
+			map.put("acessUrl",acessUrl);
 			map.put("createTime", new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()));
-			generateFile(getTemplateList(modelMethod), javafilePath, map);
+			generateFile(getTemplateList(template), javafilePath, map);
 		}catch(Exception e){
 			e.printStackTrace();
 			throw new Exception(e.getMessage());
@@ -125,19 +139,28 @@ public class GenEntityUtils {
 
 
 	
+	@SuppressWarnings("unchecked")
 	public static void  generateFile(List<String> templateList, String javafile, Object data) throws Exception{
 		Writer out = null;
-		
 		try{
-			
 			//判断文件夹是否存在
 			if(!FileUtil.checkExist(path)){
 				FileUtil.CreateDirectory(path);
 			}
-			
 			for (int i = 0; i < templateList.size(); i++) {
 				String ftlName=templateList.get(i);
-				String filePath = path+ftlName.substring(0, ftlName.indexOf("."))+".java";
+				Map<String,Object> map = (Map<String, Object>) data;
+				String entityName = map.get("entityName").toString();
+				String chinese = map.get("chinese").toString();
+				String filePath="";
+				if(i==0){
+					filePath = path+entityName+".java";
+				}else{
+					filePath = path+entityName+ftlName.substring(0, ftlName.indexOf("."))+".java";
+					if(ftlName.equals("interface.ftl")){
+						filePath = path+chinese+"接口"+".txt";
+					}
+				}
 				filePathList.add(filePath);
 				Configuration cfg =getConfiguration();
 				Template template = cfg.getTemplate(ftlName);
@@ -148,16 +171,25 @@ public class GenEntityUtils {
 				out.flush();  
 				out.close();
 			}
-			
+		}catch(Exception e){
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+		}
+	}
+
+
+	@SuppressWarnings("unused")
+	private static void MergeFile(String javafile) throws IOException,Exception {
+		try {
 			//对生成的模板进行合并
 			if(filePathList.size()==1){
 				FileUtil.copyFile(filePathList.get(0), javafile);
 			}else if(filePathList.size()>1){
 				String mainJava = filePathList.get(0);
 				StringBuffer mainJavaText= new StringBuffer(FileUtil.readTextFile(mainJava));
-				int indexOf = mainJavaText.indexOf(Constant.flag);
+				int indexOf = mainJavaText.indexOf(QuickConstant.flag);
 				if(indexOf>-1){//如果有自动生成标记号的话，就在它前面加方法
-					indexOf = mainJavaText.indexOf(Constant.flag);
+					indexOf = mainJavaText.indexOf(QuickConstant.flag);
 				}else{//没有直接加载最后面
 					indexOf=mainJavaText.lastIndexOf("}");
 				}
@@ -173,10 +205,8 @@ public class GenEntityUtils {
 				begin.append(end);
 				FileUtil.saveAsFileOutputStream(javafile, begin.toString());
 			}
-			
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
-			throw new Exception(e.getMessage());
 		}finally{
 			//删除其他文件
 			for (int i = 0; i < filePathList.size(); i++) {
