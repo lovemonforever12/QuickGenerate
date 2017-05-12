@@ -111,7 +111,7 @@ import java.util.zip.ZipFile;
      * @param desFile String
      * @return boolean
      */
-    public boolean copyToFile(String srcFile, String desFile) {
+    public static boolean copyToFile(String srcFile, String desFile) {
         File scrfile = new File(srcFile);
         if (scrfile.isFile() == true) {
             int length;
@@ -155,7 +155,7 @@ import java.util.zip.ZipFile;
      * @param destDir String
      * @return boolean
      */
-    public boolean copyDir(String sourceDir, String destDir) {
+    public static boolean copyDir(String sourceDir, String destDir) {
         File sourceFile = new File(sourceDir);
         String tempSource;
         String tempDest;
@@ -179,7 +179,7 @@ import java.util.zip.ZipFile;
      * @param dir 要删除的目录
      * @return 删除成功时返回true，否则返回false。
      */
-    public boolean deleteDirectory(File dir) {
+    public static boolean deleteDirectory(File dir) {
         File[] entries = dir.listFiles();
         int sz = entries.length;
         for (int i = 0; i < sz; i++) {
@@ -368,7 +368,7 @@ private static File getRealFileName(String baseDir, String absFileName) throws E
   * @param  targetFile   Target file
   */
  @SuppressWarnings("resource")
- static public void copyFile(String srcFile , String targetFile) throws IOException
+ public static  void copyFile(String srcFile , String targetFile) throws IOException
   {
 
    FileInputStream reader = new FileInputStream(srcFile);
@@ -401,7 +401,7 @@ private static File getRealFileName(String baseDir, String absFileName) throws E
   * @param  srcFile   Source File
   * @param  targetFile   Target file
   */
- static public void renameFile(String srcFile , String targetFile) throws IOException
+ public static  void renameFile(String srcFile , String targetFile) throws IOException
   {
    try {
     copyFile(srcFile,targetFile);

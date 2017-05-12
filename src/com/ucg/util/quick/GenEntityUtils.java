@@ -143,6 +143,7 @@ public class GenEntityUtils {
 	public static void  generateFile(List<String> templateList, String javafile, Object data) throws Exception{
 		Writer out = null;
 		try{
+			FileUtil.deleteDirectory(new File(path));
 			//判断文件夹是否存在
 			if(!FileUtil.checkExist(path)){
 				FileUtil.CreateDirectory(path);
@@ -217,8 +218,6 @@ public class GenEntityUtils {
 	}
 
 
-	
-	
 	public static  boolean isSurperField(String field){
 		if("create_user_id".equals(field) || "create_user_name".equals(field) || "create_time".equals(field)|| "update_user_id".equals(field)|| "update_user_name".equals(field)|| "update_time".equals(field) || "ID".equals(field)||"id".equals(field)){
 			return true;
