@@ -44,7 +44,7 @@ public class GenEntityUtils {
 	//jdbc
 	private static Configuration cfg;
 	private static Connection con = null;  
-	private static String javafilePath = "";
+	
 	private static String jdbcUrl="";
 	private static String user="";
 	private static String password="";
@@ -57,10 +57,10 @@ public class GenEntityUtils {
 	
 	
 	//系统路径
-	private static String path="";
+	private static String baseDir="";
 	private static String creator="";
 	private static String acessUrl="";
-	
+	private static String entityDir="";
 	
 	
 	//model里面的方法
@@ -77,8 +77,7 @@ public class GenEntityUtils {
 		tablename = PropertiesUtil.getProperty("tablename");
 		packagename = PropertiesUtil.getProperty("packagename");
 		entityname = PropertiesUtil.getProperty("entityname");
-		javafilePath = PropertiesUtil.getProperty("javafilePath")+entityname+".java";
-		path = PropertiesUtil.getProperty("path");
+		baseDir = PropertiesUtil.getProperty("baseDir");
 		creator = PropertiesUtil.getProperty("creator");
 		acessUrl = PropertiesUtil.getProperty("acessUrl");
 		template = PropertiesUtil.getProperty("template");
@@ -133,7 +132,7 @@ public class GenEntityUtils {
 			map.put("createUser",creator);
 			map.put("acessUrl",acessUrl);
 			map.put("createTime", new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()));
-			generateFile(getTemplateList(template), javafilePath, map);
+			generateFile(getTemplateList(template), map);
 		}catch(Exception e){
 			e.printStackTrace();
 			throw new Exception(e.getMessage());
@@ -147,28 +146,33 @@ public class GenEntityUtils {
 
 	
 	@SuppressWarnings("unchecked")
-	public static void  generateFile(List<String> templateList, String javafile, Object data) throws Exception{
+	public static void  generateFile(List<String> templateList, Object data) throws Exception{
 		Writer out = null;
 		try{
-			FileUtil.deleteDirectory(new File(path));
-			//判断文件夹是否存在
-			if(!FileUtil.checkExist(path)){
-				FileUtil.CreateDirectory(path);
+			if(!FileUtil.checkDirExist(baseDir)){
+				FileUtil.CreateDirectory(baseDir);
 			}
+			
+			
+			Map<String,Object> map = (Map<String, Object>) data;
+			String entityName = map.get("entityName").toString();
+			String chinese = map.get("chinese").toString();
+			String tableName = map.get("tableName").toString();
+			String filePath="";
+			entityDir=baseDir+tableName+"("+chinese+")";
+			FileUtil.CreateDirectory(entityDir);
+			entityDir=entityDir+"\\";
+			
 			for (int i = 0; i < templateList.size(); i++) {
 				String ftlName=templateList.get(i);
-				Map<String,Object> map = (Map<String, Object>) data;
-				String entityName = map.get("entityName").toString();
-				String chinese = map.get("chinese").toString();
-				String filePath="";
 				if(i==0){
-					filePath = path+entityName+".java";
+					filePath = entityDir+entityName+".java";
 				}else{
-					filePath = path+entityName+ftlName.substring(0, ftlName.indexOf("."))+".java";
+					filePath = entityDir+entityName+ftlName.substring(0, ftlName.indexOf("."))+".java";
 					if(ftlName.equals("interface.ftl")){
-						filePath = path+chinese+"接口"+".txt";
+						filePath = entityDir+chinese+"接口"+".txt";
 					}else if(ftlName.equals("Appconfig.ftl")){
-						filePath = path+"Appconfig配置"+".txt";
+						filePath = entityDir+"Appconfig配置"+".txt";
 					}
 				}
 				filePathList.add(filePath);
@@ -251,7 +255,7 @@ public class GenEntityUtils {
 			return "String";
 		}else if(dbType.startsWith("decimal")){
 			return "BigDecimal";
-		}else if(dbType.startsWith("int") ||dbType.startsWith("integer")){
+		}else if(dbType.startsWith("int") ||dbType.startsWith("integer")||dbType.startsWith("smallint")){
 			return "Integer";
 		}else if(("datetime").equals(dbType) || "date".equals(dbType)){
 			return "Date";
@@ -270,7 +274,7 @@ public class GenEntityUtils {
 			return "get";
 		}else if(dbType.startsWith("decimal")){
 			return "getBigDecimal";
-		}else if(dbType.startsWith("int") ||dbType.startsWith("integer")){
+		}else if(dbType.startsWith("int") ||dbType.startsWith("integer")||dbType.startsWith("smallint")){
 			return "getInt";
 		}else if("datetime".equals(dbType)){
 			return "getTime";
@@ -358,9 +362,7 @@ public class GenEntityUtils {
 		try {
 			initConfig();
 			generateEntity(tablename, packagename, entityname);
-			//JOptionPane.showMessageDialog(null, "完美生成实体","提示" , JOptionPane.INFORMATION_MESSAGE)
-			String doc = javafilePath.substring(0,javafilePath.lastIndexOf("\\"));
-			Runtime.getRuntime().exec("cmd /c start "+doc);
+			Runtime.getRuntime().exec("cmd /c start "+entityDir);
 			
 		} catch (Exception e) {
 			e.printStackTrace();

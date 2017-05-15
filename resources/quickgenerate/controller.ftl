@@ -62,10 +62,10 @@ public class ${entityName}Controller extends Controller {
 	*/
 	public void save() throws Exception{
 		AjaxJson j = new AjaxJson();
-		Suggest suggest = getModel(Suggest.class);
+		${entityName} ${entityName?lower_case} = getModel(${entityName}.class);
 		try {
-			suggest.saveOrUpdate();
-			j.setObj(suggest.getId());
+			${entityName?lower_case}.saveOrUpdate();
+			j.setObj(${entityName?lower_case}.getId());
 		} catch (Exception e) {
 			throw new MyException(e);
 		}

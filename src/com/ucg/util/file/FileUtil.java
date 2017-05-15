@@ -228,6 +228,32 @@ import java.util.zip.ZipFile;
         /* return */
         return result;
     }
+    
+    /**
+     * File exist check
+     *
+     * @param sFileName File Name
+     * @return boolean true - exist<br>
+     *                 false - not exist
+     */
+    public static boolean checkDirExist(String dirName) {
+
+     boolean result = false;
+
+       try {
+        File f = new File(dirName);
+	    if (f.exists() ) {
+	      result = true;
+	    } else {
+	      result = false;
+	    }
+	    } catch (Exception e) {
+	         result = false;
+	    }
+
+        /* return */
+        return result;
+    }
 
     /**
      * Get File Size
