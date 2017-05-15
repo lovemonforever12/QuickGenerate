@@ -53,6 +53,8 @@ public class GenEntityUtils {
 	private static String tablename="";
 	private static String packagename="";
 	private static String entityname="";
+	private static String entityChineseName="";
+	
 	
 	//系统路径
 	private static String path="";
@@ -80,6 +82,7 @@ public class GenEntityUtils {
 		creator = PropertiesUtil.getProperty("creator");
 		acessUrl = PropertiesUtil.getProperty("acessUrl");
 		template = PropertiesUtil.getProperty("template");
+		entityChineseName = PropertiesUtil.getProperty("entityChineseName");
 	}
 
 	
@@ -121,7 +124,11 @@ public class GenEntityUtils {
 			map.put("packageName", packageName);
 			map.put("entityName", entityName);
 			map.put("entityLowerName", entityName.toLowerCase());
-			map.put("chinese",TranslateTools.translateText(entityName.toLowerCase()).getTranslation()[0]);
+			if(StringUtil.isNotEmpty(entityChineseName)){
+				map.put("chinese",entityChineseName);
+			}else{
+				map.put("chinese",TranslateTools.translateText(entityName.toLowerCase()).getTranslation()[0]);
+			}
 			map.put("field",StringUtil.asString(fieldList, ","));
 			map.put("createUser",creator);
 			map.put("acessUrl",acessUrl);
@@ -160,6 +167,8 @@ public class GenEntityUtils {
 					filePath = path+entityName+ftlName.substring(0, ftlName.indexOf("."))+".java";
 					if(ftlName.equals("interface.ftl")){
 						filePath = path+chinese+"接口"+".txt";
+					}else if(ftlName.equals("Appconfig.ftl")){
+						filePath = path+"Appconfig配置"+".txt";
 					}
 				}
 				filePathList.add(filePath);
