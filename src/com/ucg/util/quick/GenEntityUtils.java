@@ -133,6 +133,7 @@ public class GenEntityUtils {
 			map.put("acessUrl",acessUrl);
 			map.put("createTime", new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date()));
 			generateFile(getTemplateList(template), map);
+			recordEntity(map);
 		}catch(Exception e){
 			e.printStackTrace();
 			throw new Exception(e.getMessage());
@@ -145,6 +146,33 @@ public class GenEntityUtils {
 
 
 	
+	private static void recordEntity(Map<String,Object> map) {
+		// TODO Auto-generated method stub
+		String filePath = baseDir+"实体properties"+".txt";
+		if(!FileUtil.checkExist(filePath))
+			FileUtil.CreateFile(filePath);
+		try {
+			StringBuffer properties= new StringBuffer(FileUtil.readTextFile(filePath));
+			String tableName = map.get("tableName").toString();
+			String packageName = map.get("packageName").toString();
+			String entityName = map.get("entityName").toString();
+			String chinese = map.get("chinese").toString();
+			if(StringUtil.isEmpty(properties.toString())||properties.indexOf(tableName)==-1){//没找到
+				StringBuffer content = new StringBuffer();
+				content.append("\r\n");
+				content.append("tablename="+tableName+"\r\n");
+				content.append("packagename="+packageName+"\r\n");
+				content.append("entityname="+entityName+"\r\n");
+				content.append("entityChineseName="+chinese+"\r\n");
+				FileUtil.appendFile(filePath, content.toString());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+
 	@SuppressWarnings("unchecked")
 	public static void  generateFile(List<String> templateList, Object data) throws Exception{
 		Writer out = null;
@@ -217,7 +245,7 @@ public class GenEntityUtils {
 				}
 				begin.append("\n\r");
 				begin.append(end);
-				FileUtil.saveAsFileOutputStream(javafile, begin.toString());
+				FileUtil.saveFile(javafile, begin.toString());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

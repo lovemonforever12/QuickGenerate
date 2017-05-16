@@ -97,7 +97,7 @@ public class MergeJavaUtils {
 			}
 			begin.append("\n");
 			begin.append(end);
-			FileUtil.saveAsFileOutputStream(javafile, begin.toString());
+			FileUtil.saveFile(javafile, begin.toString());
 			
 		}catch(Exception e){
 			e.printStackTrace();

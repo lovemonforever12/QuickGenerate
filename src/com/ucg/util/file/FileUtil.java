@@ -72,9 +72,38 @@ import java.util.zip.ZipFile;
   }
   return true;
  }
+ 
+ public static boolean CreateFile(String fileName){
+	  File f = new File(fileName);
+	 try {
+		f.createNewFile();
+	} catch (IOException e) {
+		e.printStackTrace();
+		return false;
+	}
+	  return true;
+ }
 
  
- public static void saveAsFileOutputStream(String physicalPath,String content) {
+ /**     
+* 创建人：陈永培   
+* 创建时间：2017-5-16 上午8:47:10
+* 功能说明:覆盖    
+*/
+ public static void saveFile(String physicalPath,String content){
+	 saveAsFileOutputStream(physicalPath,content,false); 
+ }
+ 
+ /**     
+* 创建人：陈永培   
+* 创建时间：2017-5-16 上午8:47:10
+* 功能说明:追加    
+*/
+ public static void appendFile(String physicalPath,String content){
+	 saveAsFileOutputStream(physicalPath,content,true); 
+ }
+ 
+ public static void saveAsFileOutputStream(String physicalPath,String content,boolean isAppend) {
     File file = new File(physicalPath);
     boolean b = file.getParentFile().isDirectory();
     if(!b){
@@ -85,7 +114,7 @@ import java.util.zip.ZipFile;
     //Log.info(file.getParent()+";"+file.getParentFile().isDirectory());
     FileOutputStream foutput =null;
     try {
-     foutput = new FileOutputStream(physicalPath);
+     foutput = new FileOutputStream(physicalPath,isAppend);
 
      foutput.write(content.getBytes("UTF-8"));
      //foutput.write(content.getBytes());

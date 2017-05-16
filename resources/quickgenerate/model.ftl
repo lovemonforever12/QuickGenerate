@@ -12,7 +12,7 @@ import com.ucg.base.util.TagUtil;
 * 项目名称：中盈小贷 
 * 创建人：${createUser}
 * 创建时间：${createTime}   
-* 功能说明：${chinese}实体
+* 功能说明：${chinese}实体[${tableName}]
 * 修改人：${createUser}
 * 修改时间：${createTime}     
 * 修改备注：   
