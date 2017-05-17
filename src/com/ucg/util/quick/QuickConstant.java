@@ -8,6 +8,7 @@ public class QuickConstant {
 	public static final Map<String, String> templateType = new HashMap<String, String>(){
 		private static final long serialVersionUID = 1L;
 		{
+			put("0","entityTemplate.ftl");//model	
 			put("1","model.ftl");//model		
 			put("2","Controller.ftl");//获取列表	
 			put("3","interface.ftl");//获取接口
