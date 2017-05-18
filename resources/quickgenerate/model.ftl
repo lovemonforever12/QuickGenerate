@@ -7,6 +7,7 @@ import com.jfinal.plugin.activerecord.Model;
 import java.util.Date;
 import java.math.BigDecimal;
 import com.ucg.base.util.TagUtil;
+import java.sql.Timestamp;
 
 /**
 * 项目名称：中盈小贷 
@@ -32,7 +33,12 @@ public class ${entityName}  extends Model<${entityName}>{
 	}
 
 	public void set${po.fieldName?cap_first}(${po.fieldType} ${po.fieldName}){
-		set("${po.column}", ${po.fieldName});
+	 <#if ('${po.fieldType}' == "Date")>
+	 	set("${po.column}", new Timestamp(${po.fieldName}.getTime()));
+     <#else>
+	 	set("${po.column}", ${po.fieldName});
+	 </#if>
 	}
+	
 	</#list>
 }

@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -89,7 +90,11 @@ public class AddFieldUtils {
 				
 				StringBuffer setMothod=new StringBuffer();
 				setMothod.append("	public void set"+StringUtil.firstUpperCase(getFiledName(column))+"("+getFieldType(rs.getString("type"))+" "+getFiledName(column)+"){\n");
-				setMothod.append("		set(\""+column+"\", "+getFiledName(column)+");\n");
+				if(getFieldType(rs.getString("type")).equals("Date")){
+					setMothod.append("		set(\""+column+"\", new Timestamp("+getFiledName(column)+".getTime()));\n");
+				}else{
+					setMothod.append("		set(\""+column+"\", "+getFiledName(column)+");\n");
+				}
 				setMothod.append("	}");
 				fieldInfo.setSetMethod(setMothod.toString());
 				list.add(fieldInfo);
