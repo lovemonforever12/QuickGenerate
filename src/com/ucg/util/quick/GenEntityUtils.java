@@ -181,7 +181,6 @@ public class GenEntityUtils {
 				FileUtil.CreateDirectory(baseDir);
 			}
 			
-			
 			Map<String,Object> map = (Map<String, Object>) data;
 			String entityName = map.get("entityName").toString();
 			String chinese = map.get("chinese").toString();
@@ -193,12 +192,18 @@ public class GenEntityUtils {
 			
 			for (int i = 0; i < templateList.size(); i++) {
 				String ftlName=templateList.get(i);
-				if(i==0){
+				if("model.ftl".equals(ftlName)){
 					filePath = entityDir+entityName+".java";
+				}else if("entityTemplate.ftl".equals(ftlName)){
+					filePath = entityDir+entityName+"Entity.java";
 				}else{
 					filePath = entityDir+entityName+ftlName.substring(0, ftlName.indexOf("."))+".java";
 					if(ftlName.equals("interface.ftl")){
-						filePath = entityDir+chinese+"接口"+".txt";
+						String interfacePath=baseDir+"\\全部接口\\";
+						if(!FileUtil.checkDirExist(interfacePath)){
+							FileUtil.CreateDirectory(interfacePath);
+						}
+						filePath = interfacePath+chinese+"接口"+".txt";
 					}else if(ftlName.equals("Appconfig.ftl")){
 						filePath = entityDir+"Appconfig配置"+".txt";
 					}
@@ -283,7 +288,7 @@ public class GenEntityUtils {
 			return "String";
 		}else if(dbType.startsWith("decimal")){
 			return "BigDecimal";
-		}else if(dbType.startsWith("int") ||dbType.startsWith("integer")||dbType.startsWith("smallint")){
+		}else if(dbType.startsWith("int") ||dbType.startsWith("integer")||dbType.startsWith("smallint")||dbType.startsWith("tinyint")){
 			return "Integer";
 		}else if(("datetime").equals(dbType) || "date".equals(dbType)){
 			return "Date";
@@ -291,8 +296,6 @@ public class GenEntityUtils {
 			return "Float";
 		}else if(dbType.startsWith("double")){
 			return "Double";
-		}else if(dbType.startsWith("tinyint")){
-			return "Boolean";
 		}
 		return "";
 	}
@@ -302,7 +305,7 @@ public class GenEntityUtils {
 			return "get";
 		}else if(dbType.startsWith("decimal")){
 			return "getBigDecimal";
-		}else if(dbType.startsWith("int") ||dbType.startsWith("integer")||dbType.startsWith("smallint")){
+		}else if(dbType.startsWith("int") ||dbType.startsWith("integer")||dbType.startsWith("smallint")||dbType.startsWith("tinyint")){
 			return "getInt";
 		}else if("datetime".equals(dbType)){
 			return "getTime";
@@ -312,8 +315,6 @@ public class GenEntityUtils {
 			return "getFloat";
 		}else if(dbType.startsWith("double")){
 			return "getDouble";
-		}else if(dbType.startsWith("tinyint")){
-			return "getBoolean";
 		}
 		return "";
 	}
@@ -390,6 +391,7 @@ public class GenEntityUtils {
 		try {
 			initConfig();
 			generateEntity(tablename, packagename, entityname);
+			Runtime.getRuntime().exec("cmd /c start "+baseDir+"\\全部接口\\");
 			Runtime.getRuntime().exec("cmd /c start "+entityDir);
 			
 		} catch (Exception e) {

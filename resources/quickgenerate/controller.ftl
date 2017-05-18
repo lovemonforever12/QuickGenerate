@@ -8,6 +8,7 @@ import ${packageName}.model.${entityName};
 import com.ucg.util.common.CommonUtil;
 import com.ucg.util.common.StringUtil;
 import com.ucg.util.common.DateUtils;
+import java.util.HashMap;
 
 /**
 * 项目名称：中盈小贷 
@@ -58,9 +59,9 @@ public class ${entityName}Controller extends Controller {
 	* 创建人：${createUser} 
 	* 创建时间：${createTime}  
 	* 功能说明：保存
-	* 访问地址：${acessUrl}${entityName?lower_case}/save
+	* 访问地址：${acessUrl}${entityName?lower_case}/saveOrUpdate
 	*/
-	public void save() throws Exception{
+	public void saveOrUpdate() throws Exception{
 		AjaxJson j = new AjaxJson();
 		${entityName} ${entityName?lower_case} = getModel(${entityName}.class);
 		try {
@@ -77,9 +78,18 @@ public class ${entityName}Controller extends Controller {
 	* 创建时间：${createTime}  
 	* 功能说明：根据ID获取
 	* 访问地址：${acessUrl}${entityName?lower_case}/get?id=xxxx
+	* @throws Exception 
 	*/
-	public void get(){
-		renderJson(service.findById(id()));
+	public void get() throws Exception{
+		AjaxJson j = new AjaxJson();
+		Map<String, Object> attributes=new HashMap<String, Object>();
+		try {
+			${entityName} ${entityName?lower_case}=service.findById(id());
+			attributes.put("${entityName?lower_case}", ${entityName?lower_case});
+		} catch (Exception e) {
+			throw new MyException(e);
+		}
+		renderJson(j);
 	}
 	
 	
