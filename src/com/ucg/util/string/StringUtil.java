@@ -2190,7 +2190,7 @@ public class StringUtil {
 	 * @return
 	 */
 	public static String firstUpperCase(String realName) {
-		return StringUtils.replaceChars(realName, realName.substring(0, 1),realName.substring(0, 1).toUpperCase());
+		return realName.substring(0, 1).toUpperCase() + realName.substring(1);
 	}
 
 	/**
@@ -2199,7 +2199,7 @@ public class StringUtil {
 	 * @return
 	 */
 	public static String firstLowerCase(String realName) {
-		return StringUtils.replaceChars(realName, realName.substring(0, 1),realName.substring(0, 1).toLowerCase());
+		return realName.substring(0, 1).toLowerCase() + realName.substring(1);
 	}
 	/**
 	 * 判断这个类是不是java自带的类
@@ -2506,6 +2506,18 @@ public class StringUtil {
 			return newList;
 		}
 		return null;
+	}
+	
+	/**     
+	* 创建人：陈永培   
+	* 创建时间：2017-5-18 下午4:07:16
+	* 功能说明：添加引号 如何    is_validate,examine_time  -->  'is_validate','examine_time'
+	*/
+	public static String addQuotes(String str) {
+		List<String> splitToList = StringUtil.splitToList(str);
+    	List<String> addQuotes = StringUtil.addQuotes(splitToList);
+    	String field = StringUtil.asString(addQuotes, ",");
+		return field;
 	}
 	
 }
