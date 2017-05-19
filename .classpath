@@ -11,5 +11,6 @@
 	<classpathentry kind="lib" path="webbin/commons-lang-2.5.jar"/>
 	<classpathentry kind="lib" path="webbin/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="webbin/ezmorph-1.0.3.jar"/>
+	<classpathentry kind="lib" path="webbin/PrettySQLFormatter.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
