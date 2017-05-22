@@ -14,5 +14,14 @@
 	<classpathentry kind="lib" path="webbin/PrettySQLFormatter.jar"/>
 	<classpathentry kind="lib" path="webbin/pinyin4j-2.5.0.jar"/>
 	<classpathentry kind="lib" path="webbin/framework-0.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="webbin/servlet-api.jar"/>
+	<classpathentry kind="lib" path="webbin/commons-lang3-3.1.jar"/>
+	<classpathentry kind="lib" path="webbin/poi-3.9.jar"/>
+	<classpathentry kind="lib" path="webbin/poi-ooxml-3.9.jar"/>
+	<classpathentry kind="lib" path="webbin/poi-ooxml-schemas-3.9.jar"/>
+	<classpathentry kind="lib" path="webbin/poi-scratchpad-3.9.jar"/>
+	<classpathentry kind="lib" path="webbin/poi2.jar"/>
+	<classpathentry kind="lib" path="webbin/AXmlResourceParser.jar"/>
+	<classpathentry kind="lib" path="webbin/dd-plist-1.16.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
