@@ -1,4 +1,4 @@
-package com.ucg.util.sql;
+package com.ucg.util.javaToSql;
 
 import org.hibernate.jdbc.util.FormatStyle;
 

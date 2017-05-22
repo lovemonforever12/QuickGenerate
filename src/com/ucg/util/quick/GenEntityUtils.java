@@ -49,7 +49,7 @@ public class GenEntityUtils {
 	private static String user="";
 	private static String password="";
 	
-	//数据库
+	//数据库	
 	private static String tablename="";
 	private static String packagename="";
 	private static String entityname="";

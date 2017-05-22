@@ -1,4 +1,4 @@
-package com.ucg.util.sql;
+package com.ucg.util.javaToSql;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
