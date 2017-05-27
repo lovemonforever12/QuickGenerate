@@ -29,14 +29,14 @@ public class ${entityName}  extends Model<${entityName}>{
 	
 	<#list columns as po>
 	public ${po.fieldType} get${po.fieldName?cap_first}(){ //${po.comment}
-		return ${po.getMethod}("${po.column}");
+		return ${po.getMethod}(${po.column?upper_case});
 	}
 
-	public void set${po.fieldName?cap_first}(${po.fieldType} ${po.fieldName}){
+	public ${entityName} set${po.fieldName?cap_first}(${po.fieldType} ${po.fieldName}){
 	 <#if ('${po.fieldType}' == "Date")>
-	 	set("${po.column}", new Timestamp(${po.fieldName}.getTime()));
+		return set(${po.column?upper_case}, new Timestamp(${po.fieldName}.getTime()));
      <#else>
-	 	set("${po.column}", ${po.fieldName});
+		return set(${po.column?upper_case}, ${po.fieldName});
 	 </#if>
 	}
 	

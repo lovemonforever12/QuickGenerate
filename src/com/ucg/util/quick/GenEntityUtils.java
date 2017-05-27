@@ -20,6 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.ucg.util.config.PropertiesUtil;
 import com.ucg.util.file.FileUtil;
@@ -289,7 +291,18 @@ public class GenEntityUtils {
 		}else if(dbType.startsWith("decimal")){
 			return "BigDecimal";
 		}else if(dbType.startsWith("int") ||dbType.startsWith("integer")||dbType.startsWith("smallint")||dbType.startsWith("tinyint")){
-			return "Integer";
+			String regex = "^.*[(]([\\d]{1,2})[)].*$";
+			Pattern p = Pattern.compile(regex);
+			Matcher m = p.matcher(dbType);
+			m.find();
+			String l = m.group(1);
+			
+			if(Integer.valueOf(l) > 9){
+				return "Long";
+			}else{
+				return "Integer";
+			}
+
 		}else if(("datetime").equals(dbType) || "date".equals(dbType)){
 			return "Date";
 		}else if(dbType.startsWith("float")){
@@ -306,7 +319,18 @@ public class GenEntityUtils {
 		}else if(dbType.startsWith("decimal")){
 			return "getBigDecimal";
 		}else if(dbType.startsWith("int") ||dbType.startsWith("integer")||dbType.startsWith("smallint")||dbType.startsWith("tinyint")){
-			return "getInt";
+			String regex = "^.*[(]([\\d]{1,2})[)].*$";
+			Pattern p = Pattern.compile(regex);
+			Matcher m = p.matcher(dbType);
+			m.find();
+			String l = m.group(1);
+			
+			if(Integer.valueOf(l) > 9){
+				return "getLong";
+			}else{
+				return "getInt";
+			}
+
 		}else if("datetime".equals(dbType)){
 			return "getTime";
 		}else if("date".equals(dbType)){
@@ -391,7 +415,7 @@ public class GenEntityUtils {
 		try {
 			initConfig();
 			generateEntity(tablename, packagename, entityname);
-			Runtime.getRuntime().exec("cmd /c start "+baseDir+"\\全部接口\\");
+			//Runtime.getRuntime().exec("cmd /c start "+baseDir+"\\全部接口\\");
 			Runtime.getRuntime().exec("cmd /c start "+entityDir);
 			
 		} catch (Exception e) {
