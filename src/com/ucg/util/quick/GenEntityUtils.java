@@ -290,25 +290,27 @@ public class GenEntityUtils {
 			return "String";
 		}else if(dbType.startsWith("decimal")){
 			return "BigDecimal";
-		}else if(dbType.startsWith("int") ||dbType.startsWith("integer")||dbType.startsWith("smallint")||dbType.startsWith("tinyint")){
+		}else if(dbType.startsWith("int") ||dbType.startsWith("integer")||dbType.startsWith("smallint")||dbType.startsWith("tinyint")||(dbType.startsWith("bigint")&&!dbType.contains("unsigned"))){
 			String regex = "^.*[(]([\\d]{1,2})[)].*$";
 			Pattern p = Pattern.compile(regex);
 			Matcher m = p.matcher(dbType);
 			m.find();
 			String l = m.group(1);
-			
 			if(Integer.valueOf(l) > 9){
 				return "Long";
 			}else{
 				return "Integer";
 			}
-
 		}else if(("datetime").equals(dbType) || "date".equals(dbType)){
 			return "Date";
 		}else if(dbType.startsWith("float")){
 			return "Float";
 		}else if(dbType.startsWith("double")){
 			return "Double";
+		}else if(dbType.startsWith("bigint")&&dbType.contains("unsigned")){//unsigned bigint，表示数据>0，不包含负数，那么jfinal就要使用getBigInteger。
+			return "BigInteger";
+		}else if(dbType.startsWith("bigint")){
+			return "Long";
 		}
 		return "";
 	}
@@ -339,6 +341,10 @@ public class GenEntityUtils {
 			return "getFloat";
 		}else if(dbType.startsWith("double")){
 			return "getDouble";
+		}else if(dbType.startsWith("bigint")&&dbType.contains("unsigned")){
+			return "getBigInteger";
+		}else if(dbType.startsWith("bigint")){
+			return "getLong";
 		}
 		return "";
 	}

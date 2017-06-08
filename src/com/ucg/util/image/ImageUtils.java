@@ -22,7 +22,6 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageOutputStream;
 
-import com.sun.istack.internal.logging.Logger;
 import com.ucg.util.excel.FileUtils;
 
 /**
@@ -40,7 +39,6 @@ import com.ucg.util.excel.FileUtils;
 */
 
 public class ImageUtils {
-	private static final Logger logger = Logger.getLogger(ImageUtils.class);
 
 	/**
 	 * @author xiaqiang

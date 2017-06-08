@@ -8,6 +8,7 @@ import java.util.Date;
 import java.math.BigDecimal;
 import com.ucg.base.util.TagUtil;
 import java.sql.Timestamp;
+import java.math.BigInteger;
 
 /**
 * 项目名称：中盈小贷 

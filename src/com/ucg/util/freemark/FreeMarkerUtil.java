@@ -7,15 +7,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.net.URLDecoder;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
 import sun.misc.BASE64Encoder;
 
-import com.ucg.base.framework.core.util.StringUtil;
+import com.ucg.util.string.StringUtil;
 
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
@@ -23,7 +26,7 @@ import freemarker.template.Template;
 import freemarker.template.TemplateExceptionHandler;
 
 public class FreeMarkerUtil {
-	
+	private static Configuration cfg;
 	/**   
 	*    
 	* 项目名称：UCG_OSS     
@@ -82,6 +85,42 @@ public class FreeMarkerUtil {
 		}
 	}
 	
+	/**     
+	* 创建人：陈永培   
+	* 创建时间：2017-5-29 下午2:03:03
+	* 功能说明：获取freemark模版的内容    
+	*/
+	public static String getTemplateContent(String ftlName,Map map) throws Exception{
+		Configuration cfg =getConfiguration();
+		Template template = cfg.getTemplate(ftlName);
+		template.setEncoding("UTF-8");
+		StringWriter sw=new StringWriter();
+		template.process(map, sw);  
+		//for循环 下面close方法不能写在finally方法里面，不然就没法结束流
+		sw.flush();  
+		sw.close();
+		return sw.toString();
+	}
+	
+	/**     
+	* 创建人：陈永培   
+	* 创建时间：2017-5-29 下午1:59:24
+	* 功能说明：    
+	*/
+	public static Configuration getConfiguration() throws Exception{  
+		try{
+				cfg = new Configuration();
+				String path =  FreeMarkerUtil.class.getClassLoader().getResource("").getPath();
+				File templateDirFile = new File(URLDecoder.decode(path, "UTF-8"));
+				cfg.setDirectoryForTemplateLoading(templateDirFile);
+				cfg.setLocale(Locale.CHINA);
+				cfg.setDefaultEncoding("UTF-8");
+		}catch(Exception e){
+			throw new Exception(e.getMessage());
+		}
+        return cfg;  
+	} 
+	
 	public static String toISO8859_1(String in) {
 		return toISO8859_1(in, "GBK");
 	}
@@ -131,5 +170,9 @@ public class FreeMarkerUtil {
 	    }
 	    BASE64Encoder encoder = new BASE64Encoder();
 	    return encoder.encode(data);
+	}
+	public static void main(String[] args) {
+		String path =  FreeMarkerUtil.class.getClassLoader().getResource("").getPath();
+		System.err.println(path);
 	}
 }

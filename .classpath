@@ -22,6 +22,27 @@
 	<classpathentry kind="lib" path="webbin/poi2.jar"/>
 	<classpathentry kind="lib" path="webbin/AXmlResourceParser.jar"/>
 	<classpathentry kind="lib" path="webbin/dd-plist-1.16.jar"/>
+	<classpathentry kind="lib" path="mainBin/activation.jar"/>
+	<classpathentry kind="lib" path="mainBin/akka-actor_2.11-2.3.6.jar"/>
+	<classpathentry kind="lib" path="mainBin/commons-email-1.3.3.jar"/>
+	<classpathentry kind="lib" path="mainBin/commons-lang3-3.5.jar"/>
+	<classpathentry kind="lib" path="mainBin/config-1.3.1.jar"/>
+	<classpathentry kind="lib" path="mainBin/javax.mail-1.5.5.jar"/>
+	<classpathentry kind="lib" path="mainBin/jfinal-slf4j-0.1.jar"/>
+	<classpathentry kind="lib" path="mainBin/jfinal-utils-0.1.jar"/>
+	<classpathentry kind="lib" path="mainBin/mail.jar"/>
+	<classpathentry kind="lib" path="webbin/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="pdfBin/commons-cli-1.2.jar"/>
+	<classpathentry kind="lib" path="pdfBin/commons-io-1.4.jar"/>
+	<classpathentry kind="lib" path="pdfBin/jodconverter-2.2.2.jar"/>
+	<classpathentry kind="lib" path="pdfBin/jodconverter-cli-2.2.2.jar"/>
+	<classpathentry kind="lib" path="pdfBin/juh-3.0.1.jar"/>
+	<classpathentry kind="lib" path="pdfBin/jurt-3.0.1.jar"/>
+	<classpathentry kind="lib" path="pdfBin/ridl-3.0.1.jar"/>
+	<classpathentry kind="lib" path="pdfBin/slf4j-api-1.5.6.jar"/>
+	<classpathentry kind="lib" path="pdfBin/slf4j-jdk14-1.5.6.jar"/>
+	<classpathentry kind="lib" path="pdfBin/unoil-3.0.1.jar"/>
+	<classpathentry kind="lib" path="pdfBin/xstream-1.3.1.jar"/>
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

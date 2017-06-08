@@ -83,14 +83,14 @@ public class AddFieldUtils {
 				String staticField="   	public static final String "+column.toUpperCase()+"=\""+column+"\";  //"+rs.getString("comment")+"";
 				fieldInfo.setFiled(staticField);
 				StringBuffer getMothod=new StringBuffer();
-				getMothod.append("   	public "+getFieldType(rs.getString("type"))+" get"+StringUtil.firstUpperCase(getFiledName(column))+"(){ //"+rs.getString("comment")+"\n");
-				getMothod.append("		return "+getMothodType(rs.getString("type"))+"(\""+column+"\");\n");
+				getMothod.append("   	public "+GenEntityUtils.getFieldType(rs.getString("type"))+" get"+StringUtil.firstUpperCase(getFiledName(column))+"(){ //"+rs.getString("comment")+"\n");
+				getMothod.append("		return "+GenEntityUtils.getMothodType(rs.getString("type"))+"(\""+column+"\");\n");
 				getMothod.append("	}");
 				fieldInfo.setGetMethod(getMothod.toString());
 				
 				StringBuffer setMothod=new StringBuffer();
-				setMothod.append("	public void set"+StringUtil.firstUpperCase(getFiledName(column))+"("+getFieldType(rs.getString("type"))+" "+getFiledName(column)+"){\n");
-				if(getFieldType(rs.getString("type")).equals("Date")){
+				setMothod.append("	public void set"+StringUtil.firstUpperCase(getFiledName(column))+"("+GenEntityUtils.getFieldType(rs.getString("type"))+" "+getFiledName(column)+"){\n");
+				if(GenEntityUtils.getFieldType(rs.getString("type")).equals("Date")){
 					setMothod.append("		set(\""+column+"\", new Timestamp("+getFiledName(column)+".getTime()));\n");
 				}else{
 					setMothod.append("		set(\""+column+"\", "+getFiledName(column)+");\n");
@@ -139,41 +139,7 @@ public class AddFieldUtils {
 		}
 		return entityField;
 	}
-	public static String getFieldType(String dbType){
-		if(dbType.startsWith("varchar") || dbType.startsWith("char") || dbType.startsWith("text")){
-			return "String";
-		}else if(dbType.startsWith("decimal")){
-			return "BigDecimal";
-		}else if(dbType.startsWith("int") ||dbType.startsWith("integer")||dbType.startsWith("smallint")||dbType.startsWith("tinyint")){
-			return "Integer";
-		}else if(("datetime").equals(dbType) || "date".equals(dbType)){
-			return "Date";
-		}else if(dbType.startsWith("float")){
-			return "Float";
-		}else if(dbType.startsWith("double")){
-			return "Double";
-		}
-		return "";
-	}
-	
-	public static String getMothodType(String dbType){
-		if(dbType.startsWith("varchar") || dbType.startsWith("char") || dbType.startsWith("text")){
-			return "get";
-		}else if(dbType.startsWith("decimal")){
-			return "getBigDecimal";
-		}else if(dbType.startsWith("int") ||dbType.startsWith("integer")||dbType.startsWith("smallint")||dbType.startsWith("tinyint")){
-			return "getInt";
-		}else if("datetime".equals(dbType)){
-			return "getTime";
-		}else if("date".equals(dbType)){
-			return "getDate";
-		}else if(dbType.startsWith("float")){
-			return "getFloat";
-		}else if(dbType.startsWith("double")){
-			return "getDouble";
-		}
-		return "";
-	}
+
 	
 	public static final class FieldInfo{
 		private String filed;
