@@ -16,10 +16,15 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import com.jfinal.upload.UploadFile;
+import com.ucg.base.framework.core.util.FileUtils;
+import com.ucg.util.string.StringUtil;
 
 
 public class HttpRequestor {
@@ -29,19 +34,21 @@ public class HttpRequestor {
     private Integer socketTimeout = null;
     private String proxyHost = null;
     private Integer proxyPort = null;
-    private String charseto = "utf-8";;
+    private String charseto = "utf-8";
+    public  static HttpRequestor hr=null;
     
     /**
-    * ´´½¨ÈË£º ÍõÀÉÀÉ
-    * ´´½¨Ê±¼ä£º2015-12-2 ÏÂÎç10:33:15    
-    * ËµÃ÷£º   ÏÂÔØÔ¶³ÌÎÄ¼ş
+    * åˆ›å»ºäººï¼š ç‹éƒéƒ
+    * åˆ›å»ºæ—¶é—´ï¼š2015-12-2 ä¸‹åˆ10:33:15    
+    * è¯´æ˜ï¼š   ä¸‹è½½è¿œç¨‹æ–‡ä»¶
     * @param url
     * @param toSrc
     * @return
     * boolean
      * @throws Exception 
     */
-    public String downloadFile(String url,String outPath) throws Exception{
+    @SuppressWarnings("static-access")
+	public String downloadFile(String url,String outPath) throws Exception{
     	String fileName = "fileName";
     	URL localURL = new URL(url);
         URLConnection connection = openConnection(localURL);
@@ -49,7 +56,6 @@ public class HttpRequestor {
         
         httpURLConnection.setRequestProperty("Accept-Charset", charset);
         httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        httpURLConnection.setRequestProperty("contentType", "utf-8");
         
         InputStream inputStream = null;
         
@@ -59,10 +65,16 @@ public class HttpRequestor {
         inputStream = httpURLConnection.getInputStream();
         File outFile = new File(outPath);
         if(!outFile.exists()){
-        	outFile.mkdirs();
+        	FileUtils.createFolder(outPath,false);
         }
-        fileName = httpURLConnection.getHeaderField("Content-Disposition").split("\"")[1];
+		String contentDisposition = new String(connection.getHeaderField("Content-Disposition").getBytes("ISO-8859-1"), "utf-8");
+		URLDecoder urlDecoder = new URLDecoder();
+		contentDisposition=urlDecoder.decode(contentDisposition, charset);
+		fileName =contentDisposition.replace("attachment;filename=", "");
         String toSrc = outPath + File.separator + fileName;
+        if(!FileUtils.isFileExist(toSrc)){
+        	new File(toSrc).createNewFile();
+        }
         FileOutputStream fos = new FileOutputStream(new File(toSrc));
 		byte[] bs = new byte[1024];
 		int n = 0;
@@ -77,6 +89,43 @@ public class HttpRequestor {
         }
 		return fileName;
     }
+    
+  
+     /**     
+    * åˆ›å»ºäººï¼šé™ˆæ°¸åŸ¹   
+    * åˆ›å»ºæ—¶é—´ï¼š2017-6-9 ä¸‹åˆ7:53:01
+    * åŠŸèƒ½è¯´æ˜ï¼š ä½¿ç”¨çº¿ç¨‹ä¸‹è½½æ–‡ä»¶
+    */
+    public String downloadFileWithThread(String url,String outPath,int threadNum) throws Exception{
+    	String errorUrl="";//é”™è¯¯çš„ä¸‹è½½åœ°å€
+         //å¼€å¯å¤šçº¿ç¨‹ä¸‹è½½  
+         MultiThreadManager mtDown=new MultiThreadManager(url,outPath,threadNum);  
+         try {  
+             mtDown.downLoad();  
+         } catch (Exception ex) {
+        	 errorUrl=url;
+            throw new Exception("[ä¸‹è½½è·¯å¾„]: "+url+" ä¸‹è½½é”™è¯¯");
+         }
+		return errorUrl;  
+     }
+    
+    /**     
+     * åˆ›å»ºäººï¼šé™ˆæ°¸åŸ¹   
+     * åˆ›å»ºæ—¶é—´ï¼š2017-6-9 ä¸‹åˆ7:53:01
+     * åŠŸèƒ½è¯´æ˜ï¼š ä½¿ç”¨çº¿ç¨‹ä¸‹è½½å¤šä¸ªæ–‡ä»¶æ–‡ä»¶
+     */
+     public List<String> downloadFileWithThread(List<String> urls,String outPath,int threadNum) throws Exception{
+     	List<String> errorUrlList=new ArrayList<String>();
+     	for (String url : urls) {
+     		 String errorUrl = downloadFileWithThread(url, outPath, threadNum);
+     		 if(StringUtil.isNotEmpty(errorUrlList)){
+     			errorUrlList.add(errorUrl);
+     		 }
+		}
+ 		return errorUrlList;  
+      }
+     
+    
     
     /**
      * Do GET request
@@ -163,7 +212,11 @@ public class HttpRequestor {
             }
         }
         
+        System.out.println("\r");
+        System.out.println("----------------------------------postè¯·æ±‚------------------------------------");
+        System.out.println("POST URL : " + url);
         System.out.println("POST parameter : " + parameterBuffer.toString());
+      
         
         URL localURL = new URL(url);
         
@@ -227,18 +280,19 @@ public class HttpRequestor {
             }
             
         }
-
+        System.out.println("Returnï¼š"+resultBuffer);
+        System.out.println("----------------------------------------------------------------------\r");
         return resultBuffer.toString();
     }
     
     /**    
-     * ÏîÄ¿Ãû³Æ£ºUCG_OSS     
-     * ´´½¨ÈË£ºÍõÀÉÀÉ
-     * ´´½¨Ê±¼ä£º2015-9-27 ÏÂÎç09:21:59   
-     * ¹¦ÄÜËµÃ÷£ºpost string
-     * ĞŞ¸ÄÈË£º ÍõÀÉÀÉ
-     * ĞŞ¸ÄÊ±¼ä£º2015-9-27 ÏÂÎç09:21:59    
-     * ĞŞ¸Ä±¸×¢£º   
+     * é¡¹ç›®åç§°ï¼šUCG_OSS     
+     * åˆ›å»ºäººï¼šç‹éƒéƒ
+     * åˆ›å»ºæ—¶é—´ï¼š2015-9-27 ä¸‹åˆ09:21:59   
+     * åŠŸèƒ½è¯´æ˜ï¼špost string
+     * ä¿®æ”¹äººï¼š ç‹éƒéƒ
+     * ä¿®æ”¹æ—¶é—´ï¼š2015-9-27 ä¸‹åˆ09:21:59    
+     * ä¿®æ”¹å¤‡æ³¨ï¼š   
      * @version       
      */
      public String doPost(String url, String str) throws Exception {
@@ -309,7 +363,7 @@ public class HttpRequestor {
      }
     
     /** 
-     * ÉÏ´«Í¼Æ¬ 
+     * ä¸Šä¼ å›¾ç‰‡ 
      * @param urlStr 
      * @param textMap 
      * @param fileMap 
@@ -318,7 +372,7 @@ public class HttpRequestor {
     public  String formUpload(String urlStr, Map<String, String> textMap, Map<String, UploadFile> fileMap) {  
         String res = "";  
         HttpURLConnection conn = null;  
-        String BOUNDARY = "---------------------------123821742118716"; //boundary¾ÍÊÇrequestÍ·ºÍÉÏ´«ÎÄ¼şÄÚÈİµÄ·Ö¸ô·û    
+        String BOUNDARY = "---------------------------123821742118716"; //boundaryå°±æ˜¯requestå¤´å’Œä¸Šä¼ æ–‡ä»¶å†…å®¹çš„åˆ†éš”ç¬¦    
         try {  
             URL url = new URL(urlStr);  
             conn = (HttpURLConnection) url.openConnection();  
@@ -387,9 +441,9 @@ public class HttpRequestor {
             out.flush();  
             out.close();  
   
-            // ¶ÁÈ¡·µ»ØÊı¾İ    
+            // è¯»å–è¿”å›æ•°æ®    
             StringBuffer strBuf = new StringBuffer();  
-            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));  
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(),getCharseto()));  
             String line = null;  
             while ((line = reader.readLine()) != null) {  
                 strBuf.append(line).append("\n");  
@@ -398,7 +452,7 @@ public class HttpRequestor {
             reader.close();  
             reader = null;  
         } catch (Exception e) {  
-            System.out.println("·¢ËÍPOSTÇëÇó³ö´í¡£" + urlStr);  
+            System.out.println("å‘é€POSTè¯·æ±‚å‡ºé”™ã€‚" + urlStr);  
             e.printStackTrace();  
         } finally {  
             if (conn != null) {  

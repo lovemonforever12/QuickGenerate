@@ -23,4 +23,8 @@ public class ${entityName}{
 		this.${po.fieldName} = ${po.fieldName};
 	}
 	</#list>
+	
+	<#list columns as po>
+		user.${po.fieldName}//${po.comment}
+	</#list>
 }
