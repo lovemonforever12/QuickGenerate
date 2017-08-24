@@ -86,6 +86,7 @@ public class ${entityName}Controller extends Controller {
 		try {
 			${entityName} ${entityName?lower_case}=service.findById(id());
 			attributes.put("${entityName?lower_case}", ${entityName?lower_case});
+			j.setAttributes(attributes);
 		} catch (Exception e) {
 			throw new MyException(e);
 		}

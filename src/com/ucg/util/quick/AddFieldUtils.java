@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -84,16 +83,16 @@ public class AddFieldUtils {
 				fieldInfo.setFiled(staticField);
 				StringBuffer getMothod=new StringBuffer();
 				getMothod.append("   	public "+GenEntityUtils.getFieldType(rs.getString("type"))+" get"+StringUtil.firstUpperCase(getFiledName(column))+"(){ //"+rs.getString("comment")+"\n");
-				getMothod.append("		return "+GenEntityUtils.getMothodType(rs.getString("type"))+"(\""+column+"\");\n");
+				getMothod.append("		return "+GenEntityUtils.getMothodType(rs.getString("type"))+"("+column.toUpperCase()+");\n");
 				getMothod.append("	}");
 				fieldInfo.setGetMethod(getMothod.toString());
 				
 				StringBuffer setMothod=new StringBuffer();
 				setMothod.append("	public void set"+StringUtil.firstUpperCase(getFiledName(column))+"("+GenEntityUtils.getFieldType(rs.getString("type"))+" "+getFiledName(column)+"){\n");
 				if(GenEntityUtils.getFieldType(rs.getString("type")).equals("Date")){
-					setMothod.append("		set(\""+column+"\", new Timestamp("+getFiledName(column)+".getTime()));\n");
+					setMothod.append("		set("+column.toUpperCase()+", new Timestamp("+getFiledName(column)+".getTime()));\n");
 				}else{
-					setMothod.append("		set(\""+column+"\", "+getFiledName(column)+");\n");
+					setMothod.append("		set("+column.toUpperCase()+", "+getFiledName(column)+");\n");
 				}
 				setMothod.append("	}");
 				fieldInfo.setSetMethod(setMothod.toString());

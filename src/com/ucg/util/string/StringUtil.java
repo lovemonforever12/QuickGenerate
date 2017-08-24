@@ -2520,4 +2520,19 @@ public class StringUtil {
 		return field;
 	}
 	
+	/**     
+	* 创建人：陈永培   
+	* 创建时间：2017-6-12 下午1:03:25
+	* 功能说明：去除列表重复的    
+	*/
+	public   static   List  removeDuplicate(List list)  {     
+		  for  ( int  i  =   0 ; i  <  list.size()  -   1 ; i ++ )  {     
+		      for  ( int  j  =  list.size()  -   1 ; j  >  i; j -- )  {     
+		           if  (list.get(j).equals(list.get(i)))  {     
+		              list.remove(j);     
+		            }      
+		        }      
+		      }      
+		    return list;     
+		}
 }

@@ -103,23 +103,26 @@ public class GenEntityUtils {
 		    connectSQL("com.mysql.jdbc.Driver",jdbcUrl, user, password);//连接数据
 			PreparedStatement stmt = con.prepareStatement(" show full fields from "+tableName);
 			ResultSet rs = stmt.executeQuery();
+			List<FieldInfo> superList = new ArrayList<FieldInfo>();
 			List<FieldInfo> list = new ArrayList<FieldInfo>();
 			List<String> fieldList=new ArrayList<String>();
 			while(rs.next()){
 				String column = rs.getString("field");
-				if(isSurperField(column)){
-					continue;
-				}
 				FieldInfo fieldInfo = new FieldInfo();
 				fieldInfo.setColumn(column);
 				fieldInfo.setFieldType(getFieldType(rs.getString("type")));
 				fieldInfo.setGetMethod(getMothodType(rs.getString("type")));
 				fieldInfo.setFieldName(getFiledName(column));
-				fieldList.add(getFiledName(column));
+				fieldList.add(column);
 				fieldInfo.setComment(rs.getString("comment"));
-				list.add(fieldInfo);
+				if(isSurperField(column)){
+					superList.add(fieldInfo);
+				}else{
+					list.add(fieldInfo);
+				}
 			}
 			Map<String,Object> map = new HashMap<String,Object>();
+			map.put("superColumns", superList);
 			map.put("columns", list);
 			map.put("tableName", tableName);
 			map.put("packageName", packageName);
@@ -182,7 +185,6 @@ public class GenEntityUtils {
 			if(!FileUtil.checkDirExist(baseDir)){
 				FileUtil.CreateDirectory(baseDir);
 			}
-			
 			Map<String,Object> map = (Map<String, Object>) data;
 			String entityName = map.get("entityName").toString();
 			String chinese = map.get("chinese").toString();
@@ -197,7 +199,7 @@ public class GenEntityUtils {
 				if("model.ftl".equals(ftlName)){
 					filePath = entityDir+entityName+".java";
 				}else if("entityTemplate.ftl".equals(ftlName)){
-					filePath = entityDir+entityName+"Entity.java";
+					filePath = entityDir+entityName+"Vo.java";
 				}else{
 					filePath = entityDir+entityName+ftlName.substring(0, ftlName.indexOf("."))+".java";
 					if(ftlName.equals("interface.ftl")){

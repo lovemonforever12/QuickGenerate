@@ -241,8 +241,8 @@ public class HttpRequestor {
         try {
             outputStream = httpURLConnection.getOutputStream();
             outputStreamWriter = new OutputStreamWriter(outputStream,getCharseto());
-            
-            outputStreamWriter.write(parameterBuffer.toString());
+            String val = parameterBuffer.toString();
+            outputStreamWriter.write(val);
             outputStreamWriter.flush();
             
             if (httpURLConnection.getResponseCode() >= 300) {

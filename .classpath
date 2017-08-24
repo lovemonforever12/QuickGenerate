@@ -44,6 +44,7 @@
 	<classpathentry kind="lib" path="pdfBin/unoil-3.0.1.jar"/>
 	<classpathentry kind="lib" path="pdfBin/xstream-1.3.1.jar"/>
 	<classpathentry kind="lib" path="mainBin/ant-1.6.5.jar"/>
+	<classpathentry kind="lib" path="mainBin/gson-2.1.jar"/>
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
