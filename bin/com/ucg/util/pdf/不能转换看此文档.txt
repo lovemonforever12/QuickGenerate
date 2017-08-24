@@ -1,0 +1,26 @@
+java.net.ConnectException: connection failed: socket,host=127.0.0.1,port=8100,tcpNoDelay=1: java.net.ConnectException: Connection refused: connect
+转化失败
+	at com.artofsolving.jodconverter.openoffice.connection.AbstractOpenOfficeConnection.connect(AbstractOpenOfficeConnection.java:79)
+	at com.ucg.util.pdf.Converter.office2PDF(Converter.java:66)
+	at com.ucg.util.pdf.Test.main(Test.java:8)
+
+
+报错原因：没有启动openOffice服务。
+
+解决办法：
+
+运行→cmd，输入：
+
+cd C:\Program Files (x86)\OpenOffice 4\program soffice -headless -accept="socket,host=127.0.0.1,port=8100;urp;" -nofirststartwizard
+
+回车
+
+再输入
+
+soffice -headless -accept="socket,host=127.0.0.1,port=8100;urp;" -nofirststartwizard
+
+回车
+
+ 
+
+再重新run as/debug asjava源码，就好了。
