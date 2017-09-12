@@ -5,7 +5,7 @@ public class Test {
 		String info ="";
 		String sourcePath = "D://java//testFdd.docx";
         String destFile = "D://java//testFdd.pdf";   
-        int flag = Converter.office2PDF(sourcePath, destFile);   
+        int flag = PDFConverter.office2PDF(sourcePath, destFile);   
         if (flag == 1) {  
         	info = "转化失败";  
         }else if(flag == 0){  

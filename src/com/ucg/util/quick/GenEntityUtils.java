@@ -336,7 +336,7 @@ public class GenEntityUtils {
 			}
 
 		}else if("datetime".equals(dbType)){
-			return "getTime";
+			return "getTimestamp";
 		}else if("date".equals(dbType)){
 			return "getDate";
 		}else if(dbType.startsWith("float")){
